@@ -376,7 +376,7 @@ int main (int argc, char **argv)
     static BYTE  in_data_len = 0;
     static int  fd;
 
-    static int num_responces_we_need = 0;
+    static int num_responses_we_need = 0;
     static int ret_code = 0;
     static int opt;
     static int longIndex;
@@ -403,7 +403,7 @@ int main (int argc, char **argv)
                 break;
 
             case 'r':
-                num_responces_we_need = atoi(optarg);
+                num_responses_we_need = atoi(optarg);
                 break;
                 
             case 't':
@@ -433,7 +433,7 @@ int main (int argc, char **argv)
     }
     zio_configure(fd, B115200);
 
-    if (num_responces_we_need == 0)
+    if (num_responses_we_need == 0)
     {
         ret_code = send_SAPICommand(fd, out_rawdata, out_data_len,  NULL, NULL, 0);
         zio_close(fd);
@@ -450,9 +450,9 @@ int main (int argc, char **argv)
         }
         printResponse(in_rawdata, 0, in_data_len);
 
-        num_responces_we_need --;
+        num_responses_we_need --;
 
-        while (num_responces_we_need)
+        while (num_responses_we_need)
         {
             ret_code = receive_SAPIData(fd,  in_rawdata, &in_data_len);
             if (ret_code != 0)
@@ -462,7 +462,7 @@ int main (int argc, char **argv)
             }
             printResponse(in_rawdata, resp_counter, in_data_len);
 
-            num_responces_we_need --;
+            num_responses_we_need --;
             resp_counter ++;
         }
 
