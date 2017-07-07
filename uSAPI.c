@@ -76,11 +76,11 @@ void zio_configure(int dev, int baudRate)
     cfmakeraw(&cfg);
 
     //  Flush Port, then applies attributes 
-    tcflush( dev, TCIFLUSH );
+    tcflush(dev, TCIFLUSH );
 
     if (0 != tcsetattr(dev, TCSANOW, &cfg))
     {
-        fprintf (stderr, "Failed to alter device settings\n");
+        fprintf(stderr, "Failed to alter device settings\n");
     }
 }
 
@@ -92,7 +92,7 @@ int zio_write(int dev, BYTE *buffer, BYTE size)
     
     if (result <= 0)
     {
-        fprintf (stderr, "IO Error: write returns %d\n", result);
+        fprintf(stderr, "IO Error: write returns %d\n", result);
         return -1;
     }
     
@@ -105,9 +105,9 @@ void printPacket(BYTE * buff, int data_len)
 
     for (i=0; i<data_len; i++)
     {
-        if (i!=0)
+        if (i != 0)
             fprintf(stderr, ",");
-        fprintf(stderr,"%x",buff[i]);
+        fprintf(stderr, "%02x", buff[i]);
 
     }
 }
@@ -133,7 +133,7 @@ int zio_read(int dev, BYTE *buffer, BYTE size)
         result = select(dev+1, &set, NULL, NULL, &tv);
         if (result < 0)
         {
-            fprintf (stderr, "IO Error: select fails for device. Result: %d\n", result);
+            fprintf(stderr, "IO Error: select fails for device. Result: %d\n", result);
             return 0;
         }
         if (result != 0)
@@ -142,7 +142,7 @@ int zio_read(int dev, BYTE *buffer, BYTE size)
         
             if (result < 0)
             {
-                fprintf (stderr, "IO Error: read fails for device. Result: %d\n", result);
+                fprintf(stderr, "IO Error: read fails for device. Result: %d\n", result);
                 return -1;
             }
             offset += result;
@@ -200,9 +200,9 @@ void send_SAPIData(int fd, BYTE * buff, int data_len, bool bHaveCallback)
 
     if (debug_flag)
     {
-        fprintf(stderr,"sending >> ");
+        fprintf(stderr, "sending >> ");
         printPacket(g_output_buffer, packet_len + 2);
-        fprintf(stderr,"\n");
+        fprintf(stderr, "\n");
     }
     zio_write(fd, g_output_buffer, packet_len + 2);
 }
@@ -228,14 +228,14 @@ int receive_SAPIData(int fd, BYTE * receive_buff, BYTE * receive_len)
 
     if (debug_flag)
     {
-        fprintf(stderr,"received << ");
+        fprintf(stderr, "received << ");
         printPacket(receive_buff, bytes_readed + 2);//packet_len + 2);
-        fprintf(stderr,"\n");
+        fprintf(stderr, "\n");
     }
 
     if (bytes_readed != packet_len)
     {
-        fprintf(stderr,"received << ");
+        fprintf(stderr, "received << ");
         sendAckNack(fd, NACK_CODE);
         return RETCODE_INVALID_DATALEN;
     }
@@ -270,13 +270,13 @@ int send_SAPICommand(int fd, BYTE * cmd_buff, int data_len, BYTE * cmd_response,
         {
             if (debug_flag)
             {
-                fprintf(stderr,"%x instead ACK \n", ack);
+                fprintf(stderr, "%02x instead ACK \n", ack);
             }
             return RETCODE_NOACK;
         }
         if (debug_flag)
         {
-            fprintf(stderr,"<< ACK \n");
+            fprintf(stderr, "<< ACK \n");
         }
 
          if (cmd_response == NULL)
@@ -355,7 +355,7 @@ void printResponse(BYTE * buff,int num, int data_len)
     {
         //if (i!=0)
         // fprintf(stdout, " ");
-        fprintf(stdout," %02x",buff[i]);
+        fprintf(stdout, " %02x", buff[i]);
 
     }
     fprintf(stdout," }\n");
@@ -428,7 +428,7 @@ int main (int argc, char **argv)
     fd = zio_open(portname);
     if (fd < 0)
     {
-        fprintf(stderr,"error %d opening %s: %s\n", errno, portname, strerror (errno));
+        fprintf(stderr, "error %d opening %s: %s\n", errno, portname, strerror (errno));
         return -10;
     }
     zio_configure(fd, B115200);
@@ -442,7 +442,7 @@ int main (int argc, char **argv)
     else
     {
         BYTE resp_counter = 1;
-        ret_code = send_SAPICommand(fd, out_rawdata, out_data_len,  in_rawdata, &in_data_len, callback_flag);
+        ret_code = send_SAPICommand(fd, out_rawdata, out_data_len, in_rawdata, &in_data_len, callback_flag);
         if (ret_code != 0)
         {
             zio_close(fd);
@@ -454,7 +454,7 @@ int main (int argc, char **argv)
 
         while (num_responses_we_need)
         {
-            ret_code = receive_SAPIData(fd,  in_rawdata, &in_data_len);
+            ret_code = receive_SAPIData(fd, in_rawdata, &in_data_len);
             if (ret_code != 0)
             {
                 zio_close(fd);
