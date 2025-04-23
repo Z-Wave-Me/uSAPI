@@ -14,7 +14,7 @@
 
 #define SOF_CODE        0x01
 #define ACK_CODE        0x06
-#define NACK_CODE       0x015
+#define NACK_CODE       0x15
 #define REQUEST_CODE    0x00
 #define RESPONSE_CODE   0x01
 
